@@ -5,7 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import pyotp
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret_key'app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
+app.config['SECRET_KEY'] = 'secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
 db = SQLAlchemy(app)
 
 @app.route('/')
