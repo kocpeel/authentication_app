@@ -8,6 +8,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+# class User(UserMixin, db.Model):
+
 
 @app.route('/')
 def home():
