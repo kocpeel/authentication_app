@@ -17,7 +17,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     secret_key = db.Column(db.String(100))
 
-# Login
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -28,6 +27,18 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = User.query.filter_by(username=username).first()
+        if user:
+            flash('Username already exists')
+            return redirect(url_for('register'))
+        secret_key = pyotp.random_base32()
+        new_user = User(username=username, password=generate_password_hash(password), secret_key=secret_key) # Password hashing used
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
