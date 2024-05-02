@@ -57,6 +57,13 @@ def login():
 @app.route('/authenticate', methods=['GET', 'POST'])
 @login_required
 def authenticate():
+    if request.method == 'POST':
+        otp = request.form.get('otp')
+        totp = pyotp.TOTP(current_user.secret_key)
+        if totp.verify(otp):
+            return redirect(url_for('dashboard'))
+        flash('Invalid OTP')
+    # else
     return render_template('authenticate.html')
 
 @app.route('/dashboard')
