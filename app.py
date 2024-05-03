@@ -35,7 +35,7 @@ def register():
             flash('Username already exists')
             return redirect(url_for('register'))
         secret_key = pyotp.random_base32()
-        new_user = User(username=username, password=generate_password_hash(password), secret_key=secret_key) # Password hashing used
+        new_user = User(username=username, password=generate_password_hash(password), secret_key=secret_key)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
@@ -63,9 +63,13 @@ def authenticate():
         if totp.verify(otp):
             return redirect(url_for('dashboard'))
         flash('Invalid OTP')
-    # else
+    else:
+        # generowanie opt:
+        totp = pyotp.TOTP(current_user.secret_key)
+        otp = totp.now()
+        print(f"{current_user.username} : {otp}")
     return render_template('authenticate.html')
-
+    
 @app.route('/dashboard')
 @login_required
 def dashboard():
